@@ -1,18 +1,13 @@
 import { useState } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { cn } from '@/lib/utils';
-import { Menu, X, Trophy, Users, Palette, BarChart3 } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { Menu, X, Trophy, BarChart3 } from 'lucide-react';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Play', href: '/', icon: Trophy },
-    { name: 'Multiplayer', href: '/multiplayer', icon: Users },
-    { name: 'Tournament', href: '/tournament', icon: Trophy },
-    { name: 'Themes', href: '/themes', icon: Palette },
-    { name: 'Statistics', href: '/stats', icon: BarChart3 },
+    { name: 'Stats', href: '/stats', icon: BarChart3 },
   ];
 
   return (

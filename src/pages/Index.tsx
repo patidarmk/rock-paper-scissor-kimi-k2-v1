@@ -3,32 +3,28 @@ import Header from '@/components/Header';
 import GameArena from '@/components/GameArena';
 import { MadeWithApplaa } from '@/components/made-with-applaa';
 import { 
-  GameTheme, 
-  themes, 
   defaultStats, 
   aiOpponents, 
   Player,
-  GameStats 
+  GameStats,
+  GameTheme,
+  themes
 } from '@/data/gameData';
 import { GameRound } from '@/lib/gameLogic';
 import { showSuccess, showError } from '@/utils/toast';
 
 export default function Index() {
-  const [currentTheme, setCurrentTheme] = useState<GameTheme>(themes[0]);
   const [selectedOpponent, setSelectedOpponent] = useState<Player>(aiOpponents[0]);
   const [playerStats, setPlayerStats] = useState<GameStats>(defaultStats);
+  const [currentTheme] = useState<GameTheme>(themes[0]); // Fixed classic theme
 
   useEffect(() => {
     // Load saved data from localStorage
     const savedStats = localStorage.getItem('rps-player-stats');
-    const savedTheme = localStorage.getItem('rps-theme');
     const savedOpponent = localStorage.getItem('rps-opponent');
 
     if (savedStats) {
       setPlayerStats(JSON.parse(savedStats));
-    }
-    if (savedTheme) {
-      setCurrentTheme(JSON.parse(savedTheme));
     }
     if (savedOpponent) {
       const opponent = aiOpponents.find(o => o.id === savedOpponent);
@@ -76,12 +72,6 @@ export default function Index() {
     return newStats;
   };
 
-  const handleThemeChange = (theme: GameTheme) => {
-    setCurrentTheme(theme);
-    localStorage.setItem('rps-theme', JSON.stringify(theme));
-    showSuccess(`Theme changed to ${theme.name}!`);
-  };
-
   const handleOpponentChange = (opponent: Player) => {
     setSelectedOpponent(opponent);
     localStorage.setItem('rps-opponent', opponent.id);
@@ -93,92 +83,45 @@ export default function Index() {
       <Header />
       
       <main className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            Rock Paper Scissors
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Challenge AI opponents and become the ultimate champion!
-          </p>
+        {/* Game Arena - Always at top */}
+        <div className="mb-8">
+          <GameArena
+            theme={currentTheme}
+            opponent={selectedOpponent}
+            onGameEnd={handleGameEnd}
+          />
         </div>
 
-        {/* Game Controls */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Opponent Selection */}
-          <div className="p-6 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg">
-            <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
-              <span className="mr-2">🎯</span>
-              Choose Opponent
+        {/* Simple Opponent Selection */}
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-6">
+            <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
+              Choose Your Opponent
             </h3>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {aiOpponents.map((opponent) => (
                 <button
                   key={opponent.id}
                   onClick={() => handleOpponentChange(opponent)}
-                  className={`w-full p-3 rounded-lg border-2 transition-all ${
+                  className={`p-4 rounded-lg border-2 transition-all transform hover:scale-105 ${
                     selectedOpponent.id === opponent.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      ? 'border-blue-500 bg-blue-50 shadow-lg'
+                      : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-2xl">{opponent.avatar}</span>
-                      <div className="text-left">
-                        <div className="font-semibold">{opponent.name}</div>
-                        <div className="text-sm text-gray-500 capitalize">
-                          {opponent.difficulty} difficulty
-                        </div>
-                      </div>
+                  <div className="text-center">
+                    <div className="text-4xl mb-2">{opponent.avatar}</div>
+                    <div className="font-semibold text-gray-800">{opponent.name}</div>
+                    <div className="text-sm text-gray-500 capitalize">{opponent.difficulty}</div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      Wins: {opponent.stats.wins}
                     </div>
-                    <div className="text-right text-sm text-gray-600">
-                      <div>Wins: {opponent.stats.wins}</div>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Theme Selection */}
-          <div className="p-6 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg">
-            <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
-              <span className="mr-2">✨</span>
-              Choose Theme
-            </h3>
-            <div className="space-y-3">
-              {themes.map((theme) => (
-                <button
-                  key={theme.id}
-                  onClick={() => handleThemeChange(theme)}
-                  className={`w-full p-3 rounded-lg border-2 transition-all ${
-                    currentTheme.id === theme.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-2xl">{theme.icon}</span>
-                      <div className="font-semibold">{theme.name}</div>
-                    </div>
-                    {currentTheme.id === theme.id && (
-                      <div className="w-4 h-4 rounded-full bg-blue-500" />
-                    )}
                   </div>
                 </button>
               ))}
             </div>
           </div>
         </div>
-
-        {/* Game Arena */}
-        <GameArena
-          theme={currentTheme}
-          opponent={selectedOpponent}
-          onGameEnd={handleGameEnd}
-        />
       </main>
 
       <MadeWithApplaa />

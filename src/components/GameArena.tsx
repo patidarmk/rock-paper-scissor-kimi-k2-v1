@@ -5,7 +5,7 @@ import GameChoice from './GameChoice';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { Trophy, RotateCcw, Zap } from 'lucide-react';
+import { Trophy, RotateCcw } from 'lucide-react';
 
 interface GameArenaProps {
   theme: GameTheme;
@@ -87,7 +87,7 @@ export default function GameArena({ theme, opponent, onGameEnd }: GameArenaProps
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
             Battle Arena
           </h1>
-          <p className="text-gray-600">Choose your weapon wisely!</p>
+          <p className="text-gray-600">Choose your weapon to battle {opponent.name}</p>
         </div>
 
         {/* Game Area */}
@@ -152,7 +152,7 @@ export default function GameArena({ theme, opponent, onGameEnd }: GameArenaProps
 
         {/* Choice Buttons */}
         {gameState === 'waiting' && (
-          <div className="flex justify-center space-x-4 mb-8 animate-fade-in">
+          <div className="flex justify-center space-x-4 mb-8">
             {(['rock', 'paper', 'scissors'] as Choice[]).map((choice) => (
               <GameChoice
                 key={choice}
@@ -167,7 +167,7 @@ export default function GameArena({ theme, opponent, onGameEnd }: GameArenaProps
 
         {/* Play Again Button */}
         {gameState === 'finished' && (
-          <div className="text-center animate-fade-in">
+          <div className="text-center">
             <Button
               onClick={resetGame}
               size="lg"
@@ -178,25 +178,6 @@ export default function GameArena({ theme, opponent, onGameEnd }: GameArenaProps
             </Button>
           </div>
         )}
-
-        {/* Game State Indicator */}
-        <div className="text-center mt-8">
-          <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-            <div className={cn(
-              'w-3 h-3 rounded-full',
-              gameState === 'waiting' && 'bg-green-500 animate-pulse',
-              gameState === 'playing' && 'bg-yellow-500 animate-bounce',
-              gameState === 'revealing' && 'bg-blue-500 animate-pulse',
-              gameState === 'finished' && 'bg-purple-500'
-            )} />
-            <span className="text-sm font-medium text-gray-600">
-              {gameState === 'waiting' && 'Choose your move'}
-              {gameState === 'playing' && 'Opponent is thinking...'}
-              {gameState === 'revealing' && 'Revealing choices...'}
-              {gameState === 'finished' && 'Round complete'}
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );
