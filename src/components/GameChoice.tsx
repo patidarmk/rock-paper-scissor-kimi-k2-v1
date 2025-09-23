@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Choice, choiceEmojis } from '@/data/gameData';
 import { cn } from '@/lib/utils';
 
@@ -26,13 +25,11 @@ export default function GameChoice({
   };
 
   return (
-    <motion.button
-      whileHover={!isDisabled ? { scale: 1.05 } : {}}
-      whileTap={!isDisabled ? { scale: 0.95 } : {}}
+    <button
       onClick={onClick}
       disabled={isDisabled}
       className={cn(
-        'relative rounded-2xl font-bold transition-all duration-300',
+        'relative rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 active:scale-95',
         'border-4 border-transparent hover:border-blue-400',
         'bg-gradient-to-br from-white to-gray-50',
         'shadow-lg hover:shadow-xl',
@@ -50,6 +47,6 @@ export default function GameChoice({
       {showPulse && (
         <div className="absolute inset-0 rounded-2xl bg-blue-400 opacity-20 animate-ping" />
       )}
-    </motion.button>
+    </button>
   );
 }

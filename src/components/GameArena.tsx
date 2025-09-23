@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Choice, Player, GameTheme } from '@/data/gameData';
-import { GameRound, determineWinner, getAIChoice, updatePlayerStats } from '@/lib/gameLogic';
+import { GameRound, determineWinner, getAIChoice } from '@/lib/gameLogic';
 import GameChoice from './GameChoice';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
@@ -97,104 +96,63 @@ export default function GameArena({ theme, opponent, onGameEnd }: GameArenaProps
             {/* Player Side */}
             <div className="text-center">
               <h3 className="text-xl font-semibold mb-4 text-blue-600">You</h3>
-              <AnimatePresence mode="wait">
-                {playerChoice ? (
-                  <motion.div
-                    key="player-choice"
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    exit={{ scale: 0, rotate: 180 }}
-                    transition={{ duration: 0.5, type: "spring" }}
-                  >
-                    <GameChoice
-                      choice={playerChoice}
-                      onClick={() => {}}
-                      isSelected={result === 'win'}
-                      size="lg"
-                      isDisabled
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="player-waiting"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="w-32 h-32 mx-auto rounded-2xl bg-gray-100 flex items-center justify-center border-4 border-dashed border-gray-300"
-                  >
-                    <span className="text-gray-400 text-6xl">❓</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {playerChoice ? (
+                <div className="transform transition-all duration-500 scale-100 rotate-0">
+                  <GameChoice
+                    choice={playerChoice}
+                    onClick={() => {}}
+                    isSelected={result === 'win'}
+                    size="lg"
+                    isDisabled
+                  />
+                </div>
+              ) : (
+                <div className="w-32 h-32 mx-auto rounded-2xl bg-gray-100 flex items-center justify-center border-4 border-dashed border-gray-300">
+                  <span className="text-gray-400 text-6xl">❓</span>
+                </div>
+              )}
             </div>
 
             {/* VS Indicator */}
             <div className="text-center">
-              <motion.div
-                animate={{ 
-                  scale: gameState === 'finished' ? [1, 1.2, 1] : 1,
-                  rotate: gameState === 'playing' ? [0, 360] : 0
-                }}
-                transition={{ duration: 0.5 }}
-                className="text-6xl font-bold text-gray-400"
-              >
+              <div className="text-6xl font-bold text-gray-400 transform transition-all duration-500">
                 {gameState === 'finished' && result === 'win' && '🏆'}
                 {gameState === 'finished' && result === 'loss' && '💔'}
                 {gameState === 'finished' && result === 'draw' && '⚖️'}
                 {gameState !== 'finished' && 'VS'}
-              </motion.div>
+              </div>
               {showResult && (
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={cn('text-2xl font-bold mt-4', getResultColor())}
-                >
+                <p className={cn('text-2xl font-bold mt-4 transition-all duration-300', getResultColor())}>
                   {getResultText()}
-                </motion.p>
+                </p>
               )}
             </div>
 
             {/* AI Side */}
             <div className="text-center">
               <h3 className="text-xl font-semibold mb-4 text-purple-600">{opponent.name}</h3>
-              <AnimatePresence mode="wait">
-                {aiChoice ? (
-                  <motion.div
-                    key="ai-choice"
-                    initial={{ scale: 0, rotate: 180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    exit={{ scale: 0, rotate: -180 }}
-                    transition={{ duration: 0.5, type: "spring", delay: 0.3 }}
-                  >
-                    <GameChoice
-                      choice={aiChoice}
-                      onClick={() => {}}
-                      isSelected={result === 'loss'}
-                      size="lg"
-                      isDisabled
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="ai-waiting"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="w-32 h-32 mx-auto rounded-2xl bg-gray-100 flex items-center justify-center border-4 border-dashed border-gray-300"
-                  >
-                    <span className="text-gray-400 text-6xl">❓</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {aiChoice ? (
+                <div className="transform transition-all duration-500 scale-100 rotate-0">
+                  <GameChoice
+                    choice={aiChoice}
+                    onClick={() => {}}
+                    isSelected={result === 'loss'}
+                    size="lg"
+                    isDisabled
+                  />
+                </div>
+              ) : (
+                <div className="w-32 h-32 mx-auto rounded-2xl bg-gray-100 flex items-center justify-center border-4 border-dashed border-gray-300">
+                  <span className="text-gray-400 text-6xl">❓</span>
+                </div>
+              )}
             </div>
           </div>
         </Card>
 
         {/* Choice Buttons */}
         {gameState === 'waiting' && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex justify-center space-x-4 mb-8"
-          >
+          <div className="flex justify-center space-x-4 mb-8 animate-fade-in">
             {(['rock', 'paper', 'scissors'] as Choice[]).map((choice) => (
               <GameChoice
                 key={choice}
@@ -204,16 +162,12 @@ export default function GameArena({ theme, opponent, onGameEnd }: GameArenaProps
                 showPulse={gameState === 'waiting'}
               />
             ))}
-          </motion.div>
+          </div>
         )}
 
         {/* Play Again Button */}
         {gameState === 'finished' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
+          <div className="text-center animate-fade-in">
             <Button
               onClick={resetGame}
               size="lg"
@@ -222,7 +176,7 @@ export default function GameArena({ theme, opponent, onGameEnd }: GameArenaProps
               <RotateCcw className="w-4 h-4 mr-2" />
               Play Again
             </Button>
-          </motion.div>
+          </div>
         )}
 
         {/* Game State Indicator */}
