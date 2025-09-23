@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import GameArena from '@/components/GameArena';
-import StatsPanel from '@/components/StatsPanel';
-import ThemeSelector from '@/components/ThemeSelector';
 import { MadeWithApplaa } from '@/components/made-with-applaa';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { 
   GameTheme, 
   themes, 
@@ -15,14 +11,12 @@ import {
   GameStats 
 } from '@/data/gameData';
 import { GameRound } from '@/lib/gameLogic';
-import { Trophy, Users, Target, Sparkles } from 'lucide-react';
 import { showSuccess, showError } from '@/utils/toast';
 
 export default function Index() {
   const [currentTheme, setCurrentTheme] = useState<GameTheme>(themes[0]);
   const [selectedOpponent, setSelectedOpponent] = useState<Player>(aiOpponents[0]);
   const [playerStats, setPlayerStats] = useState<GameStats>(defaultStats);
-  const [showThemeSelector, setShowThemeSelector] = useState(false);
 
   useEffect(() => {
     // Load saved data from localStorage
@@ -105,16 +99,16 @@ export default function Index() {
             Rock Paper Scissors
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Challenge AI opponents, compete in tournaments, and become the ultimate champion!
+            Challenge AI opponents and become the ultimate champion!
           </p>
         </div>
 
         {/* Game Controls */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Opponent Selection */}
-          <Card className="p-6 bg-white/90 backdrop-blur-sm">
+          <div className="p-6 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg">
             <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
-              <Target className="w-5 h-5 mr-2 text-red-500" />
+              <span className="mr-2">🎯</span>
               Choose Opponent
             </h3>
             <div className="space-y-3">
@@ -145,12 +139,12 @@ export default function Index() {
                 </button>
               ))}
             </div>
-          </Card>
+          </div>
 
           {/* Theme Selection */}
-          <Card className="p-6 bg-white/90 backdrop-blur-sm">
+          <div className="p-6 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg">
             <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
-              <Sparkles className="w-5 h-5 mr-2 text-purple-500" />
+              <span className="mr-2">✨</span>
               Choose Theme
             </h3>
             <div className="space-y-3">
@@ -176,10 +170,7 @@ export default function Index() {
                 </button>
               ))}
             </div>
-          </Card>
-
-          {/* Statistics */}
-          <StatsPanel stats={playerStats} />
+          </div>
         </div>
 
         {/* Game Arena */}
